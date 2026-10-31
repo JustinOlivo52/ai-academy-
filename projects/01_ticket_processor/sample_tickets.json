@@ -1,0 +1,20 @@
+[
+  {
+    "ticket_id": "T-001",
+    "title": "Login unavailable",
+    "urgency": 5,
+    "impact": 4
+  },
+  {
+    "ticket_id": "T-002",
+    "title": "Update welcome message",
+    "urgency": 1,
+    "impact": 1
+  },
+  {
+    "ticket_id": "T-003",
+    "title": "Export delay",
+    "urgency": 3,
+    "impact": 3
+  }
+]

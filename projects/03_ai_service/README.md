@@ -1,0 +1,2 @@
+# Project 3 — AI automation capstone
+Create a model adapter with a **fake local implementation first**; allow an optional hosted model provider later via environment variables. Input: fictional ticket. Output: `category`, `confidence`, `reason`, and `approval_required`. Always validate JSON against a typed schema. Only low-risk read operations may run without human approval; no unsupervised external writes. Add 10 labelled evaluation cases and summarize errors, latency and abstentions. Then containerize and write an architecture decision record.
