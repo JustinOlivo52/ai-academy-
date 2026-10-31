@@ -4,7 +4,7 @@
 
 | # | Stage | Lesson | Est. |
 |---|---|---|---|
-| 01 | Python | Python diagnostic and control flow | 60–120 min |
+| 01 | Python | Python control flow and business logic | 60–90 min |
 | 02 | Python | Lists dictionaries and comprehensions | 60–120 min |
 | 03 | Python | Functions modules and clean interfaces | 60–120 min |
 | 04 | Python | Classes errors and type hints | 60–120 min |
@@ -30,3 +30,18 @@ Lessons 01–12 and 14 are core for general junior contribution. Treat Lessons 1
 
 ## Passing criteria
 Correct tests, an unassisted explanation, an edge case, and a small modification. Scores are reviewed by you and the tutor; no automatic self-awarded mastery.
+
+
+## Four course stages and progressive projects
+1. **Python Programming Foundations (01–05):** loops, collections, functions/modules, OOP, typing, exceptions, JSON/CLI → Project 1 ticket processor.
+2. **Professional Software Engineering (06–10):** Git/PRs, debugging/logging, pytest, HTTP/FastAPI and SQL/SQLite → Project 2 API with persistence.
+3. **AI Automation Engineering (11–15):** mock-first LLM integration, typed outputs, tool calling, LangChain adapters, LangGraph, retries/approval and MCP concepts → Project 3 AI workflow.
+4. **Applied AI Engineering and Production (16–20):** embeddings/RAG, evaluation, model tradeoffs, Docker/deployment and capstone → production-oriented Project 3 extension and junior simulation.
+
+LangChain is explicitly covered through model/tool adapters in 11–12 and retrieval in 16; LangGraph remains Lesson 13. Do not add frameworks before the deterministic Python behavior is testable.
+
+## Material readiness
+Lesson 01 is the validated reference chapter. Lessons 02–20 preserve the original sequence and are legacy drafts pending the COURSE_STANDARD and UPGRADE_PLAN gates. Estimates for those chapters remain provisional. They must be upgraded before being represented as full textbook lessons. Prerequisites follow lesson order unless demonstrated independently through the assessment gate. Short sessions resume within a lesson; they do not require completing it in one sitting.
+
+## Full-course delivery and placement
+FULL COURSE MODE is default, including on phones; optional MOBILE REVIEW MODE requires an explicit review request. Lesson 01 now has a substantial chapter, complete worked scenario, guided programming lab and versioned independent/assessment contracts. DIAGNOSTIC.md maps independently demonstrated concepts to skipped refreshers. Exemptions do not award a lesson pass. Later chapters must adopt the revised COURSE_STANDARD before being presented as full bootcamp material.

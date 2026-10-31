@@ -1,27 +1,38 @@
-"""Simple local curriculum navigation. No network or AI dependency."""
-from pathlib import Path
+"""Offline curriculum navigation, never an automatic teaching/grading engine."""
 import argparse
+from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parent
-LESSONS = sorted((ROOT / "lessons").glob("[0-9][0-9]-*"))
+
+
+def current_lesson(root=ROOT):
+    progress = (root / "progress/PROGRESS.md").read_text(encoding="utf-8")
+    matches = re.findall(r"^Current lesson:\s*(\d{1,2})\s*$", progress, re.MULTILINE)
+    if len(matches) != 1 or not 1 <= int(matches[0]) <= 20:
+        raise ValueError("Expected exactly one Current lesson: 01–20 field in progress/PROGRESS.md")
+    number = int(matches[0])
+    lessons = list((root / "lessons").glob(f"{number:02d}-*/LESSON.md"))
+    if len(lessons) != 1:
+        raise ValueError(f"Expected exactly one LESSON.md for lesson {number:02d}")
+    return lessons[0]
+
 
 def main():
-    parser = argparse.ArgumentParser(description="AI Engineering Academy")
+    parser = argparse.ArgumentParser(description="AI Engineering Academy navigation (does not teach or grade)")
     parser.add_argument("command", choices=["next", "list", "status"])
     args = parser.parse_args()
-    progress = (ROOT / "progress" / "PROGRESS.md").read_text(encoding="utf-8")
     if args.command == "list":
-        for lesson in LESSONS:
-            print(lesson.name)
+        for lesson in sorted((ROOT / "lessons").glob("[0-9][0-9]-*/LESSON.md")):
+            print(lesson.parent.name)
     elif args.command == "status":
-        print(progress)
+        print((ROOT / "progress/PROGRESS.md").read_text(encoding="utf-8"))
     else:
-        import re
-        m = re.search(r"Current lesson:\s*(\d+)", progress)
-        number = int(m.group(1)) if m else 1
-        if number < 1 or number > len(LESSONS):
-            raise SystemExit("Update progress/PROGRESS.md Current lesson to 01–20")
-        print(LESSONS[number-1] / "LESSON.md")
+        try:
+            print(current_lesson())
+        except ValueError as error:
+            parser.exit(2, f"{error}\n")
+
 
 if __name__ == "__main__":
     main()

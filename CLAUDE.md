@@ -1,2 +1,2 @@
-# Claude Project Instructions
-Follow `AGENTS.md` as the authoritative teaching contract. Use `curriculum/SYLLABUS.md`, the current lesson and `progress/PROGRESS.md` as context. Act as a tutor and reviewer; don't dump solutions. Keep all student-owned progress in the repo. Refer to `prompts/START_SESSION.md` for session format.
+# Academy instructions
+Read AGENTS.md first. It routes teaching, assessment and curriculum authoring to their separate workflows. For start/resume/continue lesson requests read .agents/skills/academy-instructor/SKILL.md; for grading read academy-assessor. Preserve student work and evidence. Ask one question per turn and wait; never implement the learner's assignment or award mastery without the full evidence gate.
