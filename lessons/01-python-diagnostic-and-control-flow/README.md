@@ -1,2 +1,3 @@
-# Lesson 01
-Read [the chapter](LESSON.md) through an interactive instructor session. The optional [starter](STARTER.py) only supplies the function signature and deliberately raises NotImplementedError. Preserve your existing student attempt. See [START_HERE](../../START_HERE.md) for activation and explicit course-versus-lab test commands.
+# Lesson 01 — Python Control Flow and Business Logic
+
+Read [the full chapter](LESSON.md). Start in FULL COURSE MODE using [START_HERE](../../START_HERE.md). Use [the diagnostic](DIAGNOSTIC.md) to skip only demonstrated concepts, then [guided programming](GUIDED_LAB.md), [the independent assignment](ASSIGNMENT.md), and [assessment](../../assessments/lesson_01/ASSESSMENT.md). Worked code lives in examples; learner starters and the intentionally faulty debug code live in labs. Preserve every existing student attempt. Mobile review is optional, not the default course.

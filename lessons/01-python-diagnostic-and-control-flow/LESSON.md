@@ -1,251 +1,314 @@
-# Lesson 01 — Python Diagnostic and Control Flow
+# Lesson 01 — Python Control Flow and Business Logic
 
-**Stage:** Python Programming Foundations · **Status:** reference chapter, contract v1
-**Duration:** 90–120 minutes across multiple sessions; 15–20 minutes can cover one concept and a small exercise.
-**Prerequisites:** recognize variables, numbers, strings and basic Python syntax. Dictionary access and the small function interface needed here are refreshed below. No packages, LLM account or terminal are needed to begin on a phone.
+**Stage:** Python Programming Foundations · **Edition:** full-course reference, assessment v2
+**Duration:** 60–90 minutes of active learning including labs when basic syntax is familiar; remediation or a first encounter may need longer. Split at section boundaries without dropping material.
+**Prerequisites:** basic variables, lists/dictionaries, function calls and running a Python file. The diagnostic determines which refreshers you need. Prior Python/LangGraph projects are useful context, not a reason to repeat syntax you can already demonstrate.
 
-## Objectives
-By the end you can trace a branch and loop, translate a written rule into an exact Boolean condition, count matching records without resetting state, skip invalid records without stopping a batch, and independently write, test and explain a non-mutating summary function. These are behaviors to demonstrate, not boxes awarded for reading.
+## Learning outcomes and course route
+You will translate ambiguous business language into decision tables, implement ordered Boolean rules, validate before comparison, distinguish truthiness from validity, choose between guards and nested branches, process batches without losing records, and justify a loop or comprehension in review. You will demonstrate those skills through independently authored code, boundary tests and a small changed requirement.
 
-## 1. Decisions are executable requirements
-A program executes statements in order unless control flow changes that order. A condition produces a Boolean, `True` or `False`. An `if` runs its indented body when the condition is true. An `else` covers the remaining case. Indentation is part of Python's syntax: four spaces inside a block show which statements belong together.
+This chapter is the teaching source. [DIAGNOSTIC.md](DIAGNOSTIC.md) maps existing skill to sections you can skip; [GUIDED_LAB.md](GUIDED_LAB.md) contains the staged lab, [ASSIGNMENT.md](ASSIGNMENT.md) specifies the independent work, and [the assessment](../../assessments/lesson_01/ASSESSMENT.md) defines the evidence gate. Do not work through all elementary examples if you have already demonstrated them. Do not confuse skipping instruction with passing the practical assessment.
 
-```python
-minutes_waiting = 12
-if minutes_waiting >= 10:  # Includes exactly ten minutes.
-    print("Check the queue")
-else:
-    print("Continue monitoring")
-# Output: Check the queue
-```
+A typical route allocates 8 minutes to diagnosis, 20–25 to needed teaching and the worked example, 15 to guided programming, 20 to independent work, 7 to debugging, and 10 to assessment/review. These are estimates, not timers that award completion. A strong diagnostic shortens refreshers; it does not remove independent implementation. FULL COURSE MODE is the default even on a phone. MOBILE REVIEW MODE is optional reinforcement when explicitly requested.
 
-Read the condition aloud: “minutes waiting is greater than or equal to ten.” A requirement saying “at least” includes equality, whereas “more than” does not. Professional confidence starts with making this translation explicit and checking the boundary. For a threshold of ten, check nine, ten and eleven rather than testing only a large value that would satisfy either interpretation.
+## 1. From business language to an executable policy
+Imagine joining a team that automates a support queue. A stakeholder says, “Escalate important tickets quickly, but don't page anyone for work that's already closed.” An LLM could produce a plausible label from that sentence, but a teammate still needs to know exactly when the system sends a notification. If two engineers interpret “quickly” differently, the code can pass their individual examples and still implement different products. A professional first step is to turn the sentence into a policy with observable inputs and outcomes.
 
-`=` assigns a value; `==` asks whether two values are equal. `!=` means unequal; `<` and `<=` are the corresponding lower-bound comparisons. `and` requires both conditions, `or` requires at least one, and `not` reverses a truth value. Use parentheses when combining rules so the intended grouping is visible to the next engineer.
+For our worked scenario, the team agrees on this policy: closed tickets require no notification; unfamiliar or unusable open-ticket data goes to manual review; open tickets waiting at least 60 minutes go to the on-call engineer; VIP tickets reach on-call after 15 minutes; other open tickets reach the service desk after 15 minutes. Everything else remains queued. These are fictional educational rules, not real service commitments.
 
-```python
-is_weekday = True
-open_requests = 6
-if is_weekday and open_requests > 0:
-    print("Staff the queue")  # Both requirements hold.
-# Output: Staff the queue
-```
-
-### Branch ordering and the diagnostic
-`elif` means “otherwise, if.” In an `if`/`elif`/`else` chain, Python chooses the first true branch and skips the rest. Two independent `if` statements can both run. Choose a chain when outcomes are mutually exclusive; use separate conditions when more than one action should happen.
-
-```python
-attempts = 3
-if attempts >= 5:
-    print("Stop")
-elif attempts >= 2:
-    print("Retry carefully")
-else:
-    print("Retry normally")
-# Output: Retry carefully. The >= 5 branch was false.
-```
-
-**Instructor pause — diagnostic:** What prints below, and why? Wait for the learner's response before explaining the result or offering a hint.
-
-```python
-urgency = 5
-if urgency >= 3:
-    print("Standard queue")
-elif urgency >= 5:
-    print("Priority queue")
-else:
-    print("Low priority")
-```
-
-If the answer shows confusion, trace conditions in execution order using a different value. Then ask the learner to change the order to match the intended priority. Do not repair their code for them.
-
-## 2. A loop repeats work; state remembers results
-A list stores an ordered collection. A `for` loop binds its loop variable to each item in turn. The indented block runs once per item. When the list is empty, the block runs zero times; execution resumes after the loop. There is no need for a special empty-list branch if the initial state already represents the correct empty result.
-
-```python
-delays = [0, 8, 2]
-for delay in delays:
-    print(delay * 2)  # delay is a new item on each iteration.
-# Output on separate lines: 0, 16, 4
-```
-
-The loop variable holds the current item, not the entire list. To remember information across iterations, initialize an accumulator before the loop. `+=` adds to the existing value. A variable created inside a loop is not a new persistent total on each iteration if you assign zero to it every time: that assignment erases the previous total.
-
-### Practical walkthrough — total waiting time
-This is a separate example, not the ticket-summary assignment. The requirement is to total nonnegative waiting times, ignoring a negative value that indicates unavailable data.
-
-```python
-def total_wait(values):
-    total = 0                 # Initial state; also correct for an empty list.
-    for value in values:
-        if value < 0:
-            continue          # Skip this item, then visit the next one.
-        total += value        # This item contributes to the running total.
-    return total              # Return only after the entire batch is visited.
-
-print(total_wait([3, -1, 7]))   # Output: 10
-print(total_wait([]))          # Output: 0
-```
-
-Walk through the state rather than guessing from the final output:
-
-| Step | Current value | Decision | Total afterward |
+| Order | Condition | Outcome | Why this row exists |
 | --- | --- | --- | --- |
-| Before loop | — | initialize | 0 |
-| First visit | 3 | include | 3 |
-| Second visit | -1 | skip | 3 |
-| Third visit | 7 | include | 10 |
-| After loop | — | return | 10 |
+| 1 | status is closed | IGNORE | Lifecycle takes precedence over timing |
+| 2 | status unknown, or open-ticket timing/flag invalid | REVIEW | Unusable data cannot safely trigger a page |
+| 3 | minutes >= 60 OR (VIP AND minutes >= 15) | ON_CALL | Two distinct ways to require escalation |
+| 4 | minutes >= 15 | SERVICE_DESK | Remaining delayed tickets get ordinary escalation |
+| 5 | otherwise | QUEUE | Every accepted input needs a defined outcome |
 
-`continue` skips the rest of the current iteration. `break` exits the loop entirely. `return` exits the entire function, not just the loop. These are different scopes of control. A `return` indented inside the loop can silently process only the first record. With an empty input, that misplaced return might never execute and Python would return `None` implicitly.
+A decision table makes overlap visible. A VIP ticket at 60 minutes matches rows 3 and 4, so the table must specify which outcome wins. Here the first matching row wins. It also makes boundaries visible: “at least 15” includes 15, and a test at 14 will exercise a different route. Requirements become easier to discuss when you can point to a row rather than a vague adjective.
 
-The example assumes numeric values. A string such as `"3"` would make the comparison fail. That does not mean every function must solve every input problem; it means its contract must say which inputs it supports. The independent lab below explicitly defines bad urgency values.
-
-**Instructor pause:** Ask the learner to predict the result for `[0, -1, 4]`, including the total after each visit. Wait before introducing the next concept.
-
-## 3. Records, missing fields and safe comparisons
-A dictionary associates names with values. A ticket might be `{"ticket_id": "T-101", "urgency": 4}`. `ticket["urgency"]` retrieves a required key but raises `KeyError` if it is absent. `ticket.get("urgency")` returns `None` when it is absent. `None` is a sentinel meaning no value; it is not the number zero and must not be compared with an integer using `>=`.
+Here is one narrow slice of that policy, assuming the timing and flag have already been validated. It is a demonstration of Boolean reasoning, not the assignment solution:
 
 ```python
-job = {"name": "daily-export"}
-value = job.get("retries")
-print(value is None)  # Output: True. The key was absent.
+minutes = 15
+vip = True
+long_wait = minutes >= 60              # False at exactly 15.
+vip_wait = vip and minutes >= 15       # True: both requirements hold.
+needs_on_call = long_wait or vip_wait  # True: either route is enough.
+print(needs_on_call)                   # True
 ```
 
-Do not use `if not value` as a substitute for a precise missing-value rule. Zero, `False`, an empty string and `None` are all false-like in a condition, but they can mean different things. A reliable batch processor classifies bad data deliberately instead of accidentally treating it as a low score.
+The intermediate names reveal the policy. In a code review you can explain why a VIP flag alone is insufficient: the ticket must also reach the waiting boundary. That explanation matters more than recognizing the keyword `and`. Your future AI workflow may classify a ticket upstream, but the deterministic policy should remain testable without a model, network or live customer data.
 
-For this lesson's lab, only ordinary integer urgency values from 1 through 5 are valid. Boolean values are excluded, even though Python treats `bool` as a subtype of `int`. That makes an exact type check useful here:
+Before writing production logic, identify assumptions too. Is status guaranteed? Is `"15"` acceptable as a number? Is a missing VIP flag equivalent to False? This course deliberately makes those choices explicit instead of silently normalizing questionable input. The diagnostic now checks whether you can already handle related decisions, validation and batches. The instructor presents Diagnostic A as one coherent programming task and waits, then uses its evidence to skip unnecessary refreshers.
+
+## 2. Boolean logic, short-circuiting and truthiness
+A comparison such as `minutes >= 15` produces `True` or `False`. A condition is a decision about data; a variable assignment stores data. `=` assigns, `==` compares and `is None` checks for the missing-value sentinel. Once basic syntax is familiar, most real mistakes come from how conditions are combined and what the program assumes about their operands.
+
+`and` requires both predicates to hold. `or` requires at least one. `not` reverses truthiness. For our escalation rule, an ordinary long wait is sufficient on its own, while VIP escalation requires both VIP status and enough waiting time. Parentheses document grouping, even when Python's precedence would produce the same result. Python evaluates `not` before `and`, and `and` before `or`; do not make a reviewer reconstruct a dense expression's precedence to understand a business rule.
+
+| A | B | A and B | A or B |
+| --- | --- | --- | --- |
+| False | False | False | False |
+| False | True | False | True |
+| True | False | False | True |
+| True | True | True | True |
+
+Notice that this table describes Boolean operands. In Python, `and` and `or` can return an operand itself rather than a new bool. `display_name = supplied_name or "Anonymous"` chooses a fallback for any false-like supplied name. That may be convenient for display text, but it can erase meaningful zero values when used for numeric defaults. Choose an explicit `is None` check when the requirement distinguishes zero from missing.
 
 ```python
-print(type(3) is int)     # True
-print(type(True) is int)  # False
-print(isinstance(True, int))  # True: bool is an int subclass.
+reported_minutes = 0
+wrong_default = reported_minutes or 30   # 0 is false-like: result becomes 30.
+explicit_default = 30 if reported_minutes is None else reported_minutes
+print(wrong_default, explicit_default)  # 30 0
+print(bool("False"), bool(""))          # True False
 ```
 
-This is a deliberate contract choice, not a universal ban on `isinstance`. Later lessons will cover validation models and richer interfaces. Here, separate “is the value valid?” from “does a valid value meet the business rule?” Validate type before numeric comparisons. Python short-circuits Boolean expressions: with `and`, a false left side prevents evaluation of the right side; with `or`, a true left side prevents it. Clear separate branches are equally acceptable.
+False-like built-in values include `None`, `False`, numeric zero and empty containers/strings. A nonempty string is true-like even if its contents are `"False"`, `"0"` or `"no"`. Consequently, `if ticket.get("vip")` is not adequate validation for a Boolean VIP field. Truthiness asks “does this value act as true in a condition?” Validation asks “is this value allowed by this interface?” They are different questions.
+
+Python short-circuits conditions from left to right. With `and`, a false left operand makes the right operand unnecessary; with `or`, a true left operand makes it unnecessary. That lets you establish safety before a numeric comparison:
 
 ```python
-size = "large"
-if type(size) is int and size > 0:
-    print("Numeric positive size")
-else:
-    print("Unsupported size")
-# Output: Unsupported size. Python never compares "large" with zero.
+candidate = "15"
+valid_minutes = type(candidate) is int and 0 <= candidate <= 1440
+print(valid_minutes)  # False; the string is never compared with integers.
 ```
 
-A dictionary lookup does not mutate the input. Assigning to `ticket["urgency"]` does. Avoid “fixing” input records by adding defaults or converting strings in place when the contract promises not to change them. Other code may still hold a reference to that same dictionary.
+Reversing those operands can raise `TypeError` before the type check has a chance to protect the comparison. More Boolean operators do not automatically make an expression robust: evaluation order matters. If a compound condition becomes hard to reason about, name its parts or use guards rather than nesting more parentheses.
 
-**Instructor pause:** Ask the learner what `get` returns for an absent key, and why comparing that result to 4 needs a prior decision. Wait for an answer.
+`not (is_closed or is_invalid)` means both that the ticket is not closed and that it is not invalid. De Morgan's rule rewrites this as `(not is_closed) and (not is_invalid)`. This is useful when checking a negative requirement, but the clearest expression is often a positive name such as `can_route`. Avoid ambiguous names like `flag` and double negatives like `not is_not_ready`.
 
-## 4. Why this matters in an engineering role
-An automation engineer often receives a batch of API records, validates fields and chooses a route. A single misplaced return can silently discard most of the batch. A loose comparison can send a boundary case down the wrong path. A hidden mutation can make a later API request or test behave differently.
+**Section checkpoint:** Explain why `ticket.get("vip") or False` does not validate a VIP field received as the string `"False"`, and describe the contract you would enforce instead. This is one explanation task; the instructor waits before feedback.
 
-In Project 1 you will build a ticket processor. Lesson 01 supplies its first small, deterministic reporting component; Lesson 02 adds indexing, Lesson 03 separates interfaces and priority rules, and later lessons add validation, files and tests. This lesson's **urgent** means urgency alone is at least 4. Project 1's later **HIGH priority** means urgency AND impact are at least 4. These are different named requirements; do not combine them accidentally.
-
-Separating pure computation from printing, file writes and model calls makes code easier to review and test. A pure summary function returns data for another layer to display. The same input should produce the same output, without changing caller-owned records or making network calls.
-
-## Guided practice — one task per turn
-The instructor should reveal these progressively, never as a list of homework during conversation.
-
-1. With numeric urgency values `[4, 2, 5]`, write a loop and condition that count values at least 4. Expected count: 2. First state the initial count and why it belongs outside the loop. Let the learner submit before hints.
-2. Change the values to `[3, 4, 1, 5]`. Ask for the count after each iteration, then have the learner change the rule to “strictly greater than 4” and predict the changed result. Do not give both versions of the code.
-3. Use `[{"urgency": 5}, {}, {"urgency": 2}]`. Ask for code that visits all records and skips a missing urgency. Only add type and range checks after the learner explains why the missing value needs special handling.
-
-For an incorrect answer, explain with a trace rather than immediately rewriting code. First hint: identify which statement owns the remembered total. Stronger hint: show a loop skeleton with the update and condition left blank. If a solution is supplied at the learner's request, mark that activity assisted and use a fresh variation for assessment.
-
-## Independent assignment — summarize a fictional queue
-Work in `student_work/lesson_01.py`; preserve existing contents and add your own function. If it already contains a completed attempt, create a new attempt file instead and set `ACADEMY_SUBMISSION` to its repository-relative path when running tests. `STARTER.py` in this lesson is an optional interface-only template; it is not a solution and must not overwrite your work.
-
-Implement `summarize_tickets(tickets)`. A function begins with `def`, receives its named argument, and returns a value to its caller. `print` displays text; it does not substitute for returning a dictionary. The lab deliberately supplies the interface so you can focus on control flow; Lesson 03 studies function design in depth.
-
-### Exact contract, version 1
-- Input is a Python list of dictionaries. IDs and extra fields are not validated or changed in this lesson. Records need not have an ID for this summary. Non-list input and non-dictionary records are outside scope.
-- Count every input record in `total`, including invalid ones.
-- A valid urgency has exact type `int` (not bool) and is in inclusive range 1..5. Missing urgency, `None`, strings (including `"4"`), floats, booleans and out-of-range integers are invalid. Do not coerce them.
-- Valid urgency >= 4 counts in `urgent`; valid urgency below 4 counts in `non_urgent`.
-- Every invalid record counts once in `invalid` and processing continues to the next record. Invalid is not also non-urgent.
-- Return exactly `{"total": int, "urgent": int, "non_urgent": int, "invalid": int}` with nonnegative counts. For every input, `total == urgent + non_urgent + invalid`.
-- Empty input returns all four counts as zero. Return a fresh summary for each call; do not reuse global state, mutate input, print output or perform I/O.
-
-Before code, write your proposed interface and two input/output examples, including a boundary or invalid case. For this sample:
+## 3. Ordered decisions, guards and early returns
+An `if`/`elif`/`else` chain selects the first true branch. It is not a search for the most specific or most important condition. When conditions overlap, order is part of the behavior. Checking the general waiting rule before the on-call rule would send an hour-old ticket to the service desk, because both thresholds hold and the general branch wins first.
 
 ```python
-tickets = [
-    {"ticket_id": "T-101", "urgency": 4},
-    {"ticket_id": "T-102", "urgency": 2},
-    {"ticket_id": "T-103"},
-    {"ticket_id": "T-104", "urgency": "5"},
-    {"ticket_id": "T-105", "urgency": 5},
-]
-# Required return value:
-# {"total": 5, "urgent": 2, "non_urgent": 1, "invalid": 2}
+def wait_band(minutes):
+    if minutes >= 60:           # Specific/highest threshold first.
+        return "long"
+    elif minutes >= 15:
+        return "delayed"
+    return "recent"            # Remaining validated values.
+
+print(wait_band(60), wait_band(14))  # long recent
 ```
 
-Deliver your function, at least one learner-written regression test, and an explanation in your own words. The instructor reviews actual work, not a hypothetical finished solution.
+The `elif` is optional after a branch that returns. Once a return executes, that function call ends; later statements in the function cannot run. Using `if` followed by `if` can therefore express the same sequence of exclusive outcomes here. By contrast, two independent `if` statements that only print or append can both execute. Decide whether your requirements describe one result or multiple actions before choosing a structure.
 
-### Automated tests and running them
-From the repository root, after installing requirements:
+A guard clause handles a disqualifying or exceptional case near the beginning, then exits. This keeps the ordinary path less indented. Guards are especially helpful when one cannot safely evaluate the business rule until input is valid. The following teaching function determines a display instruction for a single waiting-time value. It is not a ticket-summary implementation:
+
+```python
+def waiting_label(minutes):
+    if type(minutes) is not int:
+        return "review"            # Type guard protects later comparisons.
+    if minutes < 0:
+        return "review"            # Domain guard rejects impossible values.
+    if minutes == 0:
+        return "just arrived"      # Zero is valid and has a specific meaning.
+    return "waiting"
+
+print(waiting_label(None), waiting_label(0))  # review just arrived
+```
+
+This function is equivalent in purpose to a deeply nested valid-type/valid-range branch, but it makes rejection paths explicit. Guards do not mean “return everywhere.” In a function that processes one record, an early return often makes sense. In a function processing an entire list, returning because one record is invalid would abandon the rest of the batch. The scope of the function determines whether an early return is correct.
+
+Sometimes the right response to invalid data is an exception, sometimes a structured invalid outcome. The contract must choose. Our worked routing example returns REVIEW because manual processing is a valid outcome. Later lessons explore exception boundaries when an entire operation cannot proceed. Do not catch every exception merely to return a normal-looking label; that can hide programming defects as data problems.
+
+A review should ask whether all accepted inputs reach a result, whether any rule is unreachable, and whether the order is intentional. A comment saying “check priority” adds little. A comment saying “closed tickets bypass timing validation because no notification will be sent” records a policy choice a future maintainer might otherwise undo.
+
+**Section checkpoint:** A queue processor calls `return` when it encounters one malformed ticket. Explain when that is correct and when it loses work, using the difference between a single-record function and a batch function.
+
+## 4. Validation and boundary design
+A field's name does not prove its type. JSON-like records can carry a number, a numeric string, `None`, a Boolean, or no key at all. Dictionary indexing such as `ticket["urgency"]` asserts a key exists; `.get("urgency")` produces `None` when absent. Use indexing for guaranteed required structure and `.get` when the contract explicitly handles missing data. Neither lookup mutates the dictionary.
+
+For urgency scores this course requires exact integers in 1..5, with no coercion. Why reject `"4"` instead of converting it? Because silent conversion decides an upstream data-quality question without documenting it. A later ingestion layer may deliberately normalize strings, but a business function should have a stable contract. Why reject `True`? Because `bool` is a subclass of `int`, and the number-like behavior of True is not evidence that a Boolean flag is a meaningful urgency score.
+
+```python
+print(isinstance(True, int))  # True: Python's type hierarchy.
+print(type(True) is int)      # False: exact built-in int only.
+score = 4
+valid_score = type(score) is int and 1 <= score <= 5
+print(valid_score)            # True
+```
+
+Exact type checks are a deliberate choice for these simple educational contracts. They are not a universal replacement for `isinstance`, abstract interfaces or typed validation models. A type hint such as `score: int` documents an expectation; ordinary Python does not enforce it at runtime. You still need to decide where validation belongs.
+
+Boundary tests should separate neighboring decisions. For an urgent threshold of 4, use 3, 4 and 5. For the validity domain, use 0, 1, 5 and 6. A large valid number might test the urgency branch but never detect that the code used `>` instead of `>=` at the threshold. Types such as `4.0` and `True` can compare equal to integers, so checking only returned numeric equality is insufficient when the contract specifies exact types.
+
+Missing, invalid and nonmatching are distinct categories. A valid score of 2 is non-urgent; a missing score is invalid. If both increment a “not urgent” count, the result conceals data quality. Make the partition explicit: every input belongs to exactly one category, and the categories sum to the total. That invariant catches entire families of errors, including double-counting and skipped records.
+
+Do not repair the caller's dictionaries to make tests easier. Other code may hold a reference to the same objects. Reading, validating and constructing a separate output avoids surprising a downstream component. In tests, compare against a deep copy when nested fields are present; a shallow list copy would still share its inner dictionaries and could hide mutation.
+
+## 5. Batch control flow and comprehensions
+A loop is repeated decision-making with state. An accumulator should be initialized once for the scope over which it summarizes. If it is reset inside the loop, the output reflects only the final iteration's partial history. If it is global or a mutable default argument, it can leak values across unrelated calls. A fresh local result on each call makes behavior easier to test and reason about.
+
+`continue` skips the remaining statements for the current iteration. `break` exits the nearest loop. `return` exits the whole function. These are not interchangeable ways to “skip bad data.” For a batch summary, bad data may need to be counted and processing continued. For a search for the first matching record, stopping early can be exactly what the contract requires. Always connect the control statement to the operation's purpose.
+
+```python
+def total_recorded_waits(values):
+    total = 0                       # Lives for this one function call.
+    for value in values:
+        if value is None:
+            continue                # Missing observation, not end of batch.
+        total += value              # Assumes other values are numeric.
+    return total                    # Runs even when the input is empty.
+
+print(total_recorded_waits([3, None, 7]))  # 10
+print(total_recorded_waits([]))            # 0
+```
+
+Trace the accumulator for `[3, None, 7]`: initialize to zero, add three, skip the missing observation without changing the total, add seven, then return ten. Empty input performs zero loop iterations, so the initialized value is already the correct result. This is an example of choosing a useful initial state rather than adding special-case branches to compensate for a misplaced return.
+
+A comprehension is appropriate when a single expression maps or filters an already-understood collection. For validated fictional tickets, extracting the IDs of open tickets is concise:
+
+```python
+validated = [{"ticket_id": "T-1", "status": "open"},
+             {"ticket_id": "T-2", "status": "closed"}]
+open_ids = [ticket["ticket_id"] for ticket in validated
+            if ticket["status"] == "open"]
+print(open_ids)  # ['T-1']
+```
+
+Read this as “the ID for each ticket whose status is open.” It constructs a new list and preserves iteration order. It does not copy or validate every nested object. It should not perform network calls or mutate input as a side effect. When processing needs several validation guards, separate counters, rejection reasons and multiple decisions, an ordinary loop exposes the workflow more clearly. Clever syntax is not a professional requirement; explainable behavior is.
+
+A useful clean-code progression is: implement the explicit loop, establish tests, then consider a comprehension only if it simplifies the already-correct transformation. Do not refactor and change policy simultaneously; otherwise a failing test leaves two possible causes. The independent summary assignment is intentionally a good place to prefer a loop over a dense comprehension.
+
+**Section checkpoint:** Explain which of these operations suits a comprehension better: extracting IDs from validated open records, or producing four counters while recording invalid data. Justify the choice in terms of clarity and control flow.
+
+## 6. Full worked example — support-ticket escalation
+The complete teaching implementation is in [examples/escalation.py](examples/escalation.py). Its policy uses waiting time and VIP status; your independent assignment uses urgency/impact decisions and a summary, so this is a model of engineering practice rather than a ready-made lab answer.
+
+### Step 1: Set the contract and policy precedence
+Input is a dictionary. `status` must be open or closed. A closed ticket returns IGNORE immediately even if timing data is absent: our policy explicitly says no notification will be sent. Open tickets require an exact integer `minutes_waiting` from 0 through 1440 and an explicit Boolean `vip`. Unknown status or invalid open-ticket fields return REVIEW. Other dictionary keys are ignored and never changed. No function sends a page; it returns a decision for another layer to act on.
+
+### Step 2: Implement rejection guards before the ordinary path
+The complete single-record teaching implementation follows. Its guards and policy predicate are annotated so you can trace the whole decision, not infer missing code.
+
+```python
+def escalation_channel(ticket):
+    """Route a fictional ticket under the Lesson 01 worked-example policy.
+
+    Closed tickets are ignored before timing validation. Open tickets require
+    exact integer minutes 0..1440 and an explicit Boolean vip value.
+    """
+    status = ticket.get("status")
+    if status == "closed":
+        return "IGNORE"  # Lifecycle policy wins; no notification is needed.
+    if status != "open":
+        return "REVIEW"  # Unknown lifecycle state must not trigger paging.
+
+    minutes = ticket.get("minutes_waiting")
+    vip = ticket.get("vip")
+    if type(minutes) is not int or not 0 <= minutes <= 1440:
+        return "REVIEW"  # Reject bool, strings, missing and out-of-range data.
+    if type(vip) is not bool:
+        return "REVIEW"  # Do not interpret a nonempty string as a Boolean flag.
+
+    needs_on_call = minutes >= 60 or (vip and minutes >= 15)
+    if needs_on_call:
+        return "ON_CALL"
+    if minutes >= 15:
+        return "SERVICE_DESK"
+    return "QUEUE"
+```
+
+```python
+# Complete runnable source: examples/escalation.py
+from pathlib import Path
+import runpy
+example = runpy.run_path(str(Path("lessons/01-python-diagnostic-and-control-flow/examples/escalation.py")))
+route = example["escalation_channel"]
+print(route({"status": "closed"}))  # IGNORE despite absent timing fields.
+print(route({"status": "open", "minutes_waiting": "60", "vip": False}))  # REVIEW
+```
+
+The implementation first handles lifecycle. It then validates the waiting time and the VIP flag before evaluating the escalation expression. Each guard both states a rejection rule and protects the assumptions of later code. The ordering is intentional: if your business wanted to audit every closed record's timing too, this contract and its tests would need to change. Requirements, not personal preferences about early returns, decide that behavior.
+
+### Step 3: Name the business predicate and return one decision
+After validation the implementation names `needs_on_call = minutes >= 60 or (vip and minutes >= 15)`. That expression is safe because the guards established numeric minutes and a Boolean flag. An early return handles ON_CALL. The remaining delay branch handles SERVICE_DESK, and the final return handles QUEUE. There are no side effects or hidden defaults.
+
+Run the full example from the repository root:
 
 ```bash
-python -m pytest -q assessments/lesson_01/test_summary.py
+python lessons/01-python-diagnostic-and-control-flow/examples/escalation.py
 ```
 
-The suite covers empty input, every valid boundary, missing/malformed values, mixed batches, continuation, non-mutation, repeat calls and no printed output. Initially it fails because the preserved student file has no function; the optional STARTER raises `NotImplementedError` when called. Both are intentional incomplete states, not installation failures. Once you implement the function, failing assertions identify behavior to investigate. Do not weaken tests to get green output.
+Expected output:
 
-`python -m pytest -q` checks course integrity only. It never proves your lab is complete. The later `practice/test_ticket_rules.py` tests a different assignment. On a phone you can submit code in chat and reason through cases; until somebody actually executes the acceptance suite, execution evidence stays pending.
-
-## Debugging challenge — find the early exit
-A colleague wrote this separate waiting-time function:
-
-```python
-def sum_delays(delays):
-    total = 0
-    for delay in delays:
-        total += delay
-        return total
+```text
+S-10 IGNORE
+S-11 SERVICE_DESK
+S-12 ON_CALL
+S-13 REVIEW
+S-14 QUEUE
 ```
 
-Requirement: sum every numeric value; empty input returns 0. Reproduce with `[2, 3, 4]` (expected 9) and `[]` (expected 0). Predict actual behavior before running. Explain the smallest root cause, write the correction yourself in a new student file, and add regression tests for multi-item and empty input. Do not just special-case these two inputs. The instructor should ask for one step at a time and wait before revealing the cause.
+### Step 4: Trace a realistic boundary, then inspect alternatives
+For S-12, status is open so neither lifecycle guard returns. Waiting time 15 is an allowed int and VIP True is an allowed bool. The ordinary long-wait predicate is false, but the VIP-and-delay predicate is true, so ON_CALL returns. The later service-desk condition is never reached even though its threshold also holds. At 14 minutes the VIP predicate becomes false and the result becomes QUEUE. At 60 minutes even non-VIP records route to ON_CALL.
 
-## Knowledge checks — ask one at a time
-1. When do two independent `if` statements behave differently from an `if`/`elif` chain?
-2. Why does placing an accumulator initialization inside a loop change a batch result?
-3. How do `continue`, `break` and `return` differ when used inside a function's loop?
-4. Why must a missing or malformed urgency be handled before comparison, and why is `True` invalid in this contract?
-5. Which tests distinguish urgency `> 4` from `>= 4`, and how would you demonstrate that input was not mutated?
+| Case | Guard result | On-call condition | Remaining outcome |
+| --- | --- | --- | --- |
+| closed, no timing | IGNORE return | not evaluated | not evaluated |
+| open, minutes="60" | REVIEW return | not evaluated | not evaluated |
+| open, minutes=14, VIP=True | pass | False | QUEUE |
+| open, minutes=15, VIP=True | pass | True | ON_CALL |
+| open, minutes=15, VIP=False | pass | False | SERVICE_DESK |
+| open, minutes=60, VIP=False | pass | True | ON_CALL |
 
-## Common mistakes and troubleshooting
-| Symptom | Likely cause | Investigation |
+If the general delay branch came first, the last two escalation categories would overlap incorrectly. If a Boolean VIP flag were replaced with the string `"False"`, truthiness could accidentally page someone unless validation caught it. If code normalized `minutes_waiting` in place, a downstream component would see a different record. Each failure is connected to an explicit requirement, so tests can target it without relying on a real notification service.
+
+### Step 5: Test behavior and communicate the change
+The repository's worked-example tests cover all 4 combinations of VIP values and threshold sides, malformed values, lifecycle precedence, non-mutation and lack of output. One regression example asserts that open/non-VIP at 60 returns ON_CALL, guarding against a reordered general branch. The source and tests are executable course material, not a production service.
+
+A review-ready explanation would identify the contract, which row wins when rules overlap, what bad data does, and how the 14/15 and 59/60 tests support the claim. “It seems to work on my sample” is weaker evidence because the sample may never separate two plausible policies.
+
+## Guided laboratory — build an escalation preview
+Use [GUIDED_LAB.md](GUIDED_LAB.md). The learner implements a batch preview around the worked single-record decision, preserving input order and input objects. It has three stages: explain expected outcomes before coding, implement the preview with a runnable starter and acceptance cases, then add a learner-written boundary regression and explain the choice of loop or comprehension. The instructor teaches the relevant section first and reveals one stage at a time. Do not paste all stages as a quiz list.
+
+## Independent assignment — priority decisions and queue summary
+Use [ASSIGNMENT.md](ASSIGNMENT.md). Independently implement `priority_for(ticket)` under the urgency-and-impact policy plus the preserved `summarize_tickets(tickets)` v1 contract. The two functions intentionally answer different business questions. At least three learner-written tests must show meaningful boundaries and malformed-data behavior. The instructor does not write either implementation.
+
+## Debugging exercise — a batch preview that loses work
+[labs/buggy_preview.py](labs/buggy_preview.py) is intentionally faulty and is never used as the worked solution. Its contract is to preview every ticket as `(ticket_id, channel)`, preserving order and input, with an empty input returning an empty list. It should use the worked single-record policy. Reproduce the failure on open, closed, then open tickets, and on empty input. The documented correct mixed result includes IGNORE for the closed record and still includes the later open record.
+
+Predict behavior, run to reproduce, identify the root causes, then implement your own corrected version in a new student file. Add a failing regression before the correction and show it passing afterward. The supplied reproduction tests are expected to fail against the faulty file. A fix for one sample is insufficient: demonstrate multi-record continuation and empty behavior too. The instructor waits for the learner's investigation before giving hints.
+
+## Conceptual assessment — five review questions
+1. Translate the urgency/impact policy into a decision table. Which valid inputs satisfy both the medium and high predicates, and how does the code resolve overlap?
+2. Explain truthiness versus validity using zero, None, True and the string "False". What does short-circuit order protect?
+3. Compare a guard-return in a single-record function with continue, break and return in a batch processor. Give an appropriate use of each.
+4. Explain the summary partition invariant, why input mutation matters, and which tests establish both properties.
+5. Choose between a loop and a comprehension for the guided preview and the independent summary; explain how you would test a changed threshold without mixing refactoring with policy changes.
+
+The assessor asks these individually after relevant teaching/lab work, accepts accurate explanations in your own words, and probes a gap rather than requiring memorized wording. Practical assessment additionally requires executed independent code and an unseen small modification; diagnostic exemptions do not bypass that gate.
+
+## Common mistakes, review and troubleshooting
+| Symptom | Likely issue | Useful next check |
 | --- | --- | --- |
-| Only one record counted | return inside loop, or break used to skip invalid data | Trace a three-record input and mark the exit point |
-| Count never exceeds one | counter reset inside the loop | Write the value before/after each visit |
-| Urgency 4 not urgent | strict > instead of inclusive >= | Test values 3, 4 and 5 separately |
-| KeyError for one ticket | direct indexing of an optional field | Compare required-key access with get |
-| TypeError comparing values | invalid type reached numeric comparison | Inspect type before applying the rule |
-| True counted as urgency 1 | isinstance(True, int) is true | Check the exact contract and type behavior |
-| Empty input returns None | return only runs during iteration | Trace zero iterations; inspect function exit |
-| Result prints but caller gets None | print used instead of return | Assign the call result and inspect it |
-| Second call has old counts | shared/global accumulator | Call twice with different batches |
-| Original dictionaries changed | assignment used to normalize input | Compare a deep copy before and after |
+| VIP="False" escalates | truthiness substituted for type validation | exact bool test before the policy |
+| urgent boundary behaves differently at 4 | > used where >= was required | adjacent 3/4/5 cases |
+| HIGH tickets become MEDIUM | general predicate checked first | truth table for overlap |
+| malformed field raises TypeError | comparison before validation | order of guards/short-circuit operands |
+| batch ignores records after one bad ticket | break or return used to skip | trace each record and the exit point |
+| empty batch returns None | only return is inside a loop | zero-iteration trace |
+| counts change across calls | mutable shared/global accumulator | different calls, mutate first result, call again |
+| original input changes | normalization performed on caller objects | deep-copy comparison |
+| test output is green but no learner code ran | default course checks mistaken for assessment | run the explicit student suite |
 
-When an assertion fails, read its input and expected output, reproduce the smallest case, predict the path, then run it. Change one cause and repeat the relevant check. Do not add broad exception handling to hide a control-flow bug. If pytest is unavailable, install requirements in the selected interpreter; if imports fail, run from the repository root and verify the selected submission path.
+Review for descriptive predicate names, explicit policy precedence, useful initial states, limited nesting, no side effects in business functions and comments that explain why a rule exists. Avoid catching broad exceptions to hide contract errors. A clear small function with well-chosen tests is more professional than compressed code that only its author can decipher.
 
-## Summary
-Conditions translate requirements into branches; their order and boundaries are observable behavior. Loops repeat those decisions across records, while accumulators preserve information across iterations. Validation separates unusable data from valid data that does not match a business rule. Return data after the whole batch, keep caller-owned input intact, and check both ordinary and edge cases. These habits make small changes explainable in a review and form the base of the progressive ticket processor.
+If pytest is missing, install requirements in the selected interpreter and run commands from the repository root. If a student suite reports a missing callable, the starter is still unfinished or the selected file is wrong. It is not evidence that the acceptance suite should be weakened. Phone work can proceed in chat, with execution explicitly pending until the tests run.
 
-## Completion criteria
-- [ ] Guided work and the debugging challenge completed by the learner.
-- [ ] Independent summary meets the published contract and relevant tests actually pass.
-- [ ] Learner-written regression test covers an explained bug or edge case.
-- [ ] Five knowledge checks discussed; misconceptions corrected by the learner.
-- [ ] Unassisted explanation, one checked edge case and a small fresh modification meet the assessment gate.
-- [ ] Evidence record saved; only then mark passed and advance. Reading alone is studied, never mastery.
+## Summary and completion criteria
+Control flow turns a policy into execution order. Boolean grouping expresses requirements, guards establish assumptions, ordered branches resolve overlap, and loop control determines how much of a batch gets processed. Truthiness is a language mechanism, not a data schema. Boundary tests distinguish plausible implementations, and invariants plus non-mutation checks expose errors that single happy paths miss. These habits underpin the later ticket CLI, API and AI workflow.
+
+Complete the needed teaching or documented diagnostic exemptions, guided lab (unless independently exempted), debugging regression, independent assignment, five conceptual checks and a fresh small changed requirement. Save actual test evidence and explanation in an assessment record. Only the full gate awards mastery; no upgrade, reading session or default course check changes learner progress.
 
 ## Go Deeper — two resources
 1. **Official Python tutorial — control flow:** https://docs.python.org/3/tutorial/controlflow.html
-2. **Real Python — for loops:** https://realpython.com/python-for-loop/
+2. **Real Python — conditional statements and Boolean behavior:** https://realpython.com/python-conditional-statements/
 
-These are optional reinforcement, not prerequisites. If either is inaccessible or requires membership, continue with this chapter. Link verification status is recorded in `curriculum/LINK_AUDIT.md`.
+These reinforce the original chapter; neither is required to understand it. HTTP reachability is logged in the link audit; paid access is never assumed.
 
 ## Next lesson
-After a passed assessment, continue to Lesson 02 — Lists, dictionaries and comprehensions. If interrupted, record the exact pending question and resume there; do not restart or advance based on time spent.
+Lesson 02 deepens collection design and transformations after this lesson's assessment passes. If interrupted, resume the exact meaningful section or lab stage with diagnostic exemptions intact. Do not restart with the old one-line branch quiz.

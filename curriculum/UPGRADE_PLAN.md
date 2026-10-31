@@ -50,3 +50,6 @@ For every chapter: original textbook explanations, multiple executed annotated e
 
 ## Sequencing and readiness
 Lessons 01–12 and 14 remain the pre-onboarding priority. Do not skip an unproven prerequisite to meet a date. After each batch, update its material-readiness status in SYLLABUS, record author checks in VALIDATION, and leave learner PROGRESS unchanged until actual learning/assessment evidence exists.
+
+## Full-course standard update
+Before any later batch, apply the revised COURSE_STANDARD: substantial chapter delivery by default, explicit opt-in mobile review, a concept-mapped diagnostic skip path, complete realistic worked code, staged programming labs and versioned assessments. Lesson 01 now introduces urgency/impact decisions; Lesson 03 should refactor those learner-authored decisions into modules/interfaces instead of silently treating them as brand-new material. Lessons 02–20 are not rewritten by this update.

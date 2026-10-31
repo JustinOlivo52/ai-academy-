@@ -1,16 +1,22 @@
-# Lesson 01 assessment contract, version 1
+# Lesson 01 assessment — full-course v2
 
-Primary submission: `student_work/lesson_01.py`, function `summarize_tickets(tickets)`.
-Read the exact input/output contract in the lesson. All submitted code must be learner-authored; a template is not an attempt. The acceptance suite imports but does not edit the submission. Read code before executing it.
+Assessment v2 consists of independent priority_for(ticket) plus the preserved summarize_tickets(tickets) v1 contract in the lesson's ASSIGNMENT.md. Preserve historical v1 records as v1; never retroactively overwrite or upgrade their verdict. There are no recorded passes at authoring time.
 
-## Evidence sequence (one item per learner turn)
-1. Independent implementation; run `python -m pytest -q assessments/lesson_01/test_summary.py`. Missing function and NotImplementedError are expected before the learner starts. Do not xfail real bugs to make the suite green.
-2. Ask the learner to explain why invalid records cannot reach the urgency comparison and why the summary is returned after processing the whole list.
-3. Ask for one boundary or malformed case not already discussed, its predicted summary, then an executed check. Prediction alone is not execution.
-4. Select a small fresh modification after inspecting the submission, such as accepting a caller-supplied threshold with an explicit default and validation contract. Require learner-written code and a test for the change. Do not add it to the base contract automatically.
-5. Review readability and any independent correction; re-run affected checks on final code. Store actual evidence using the record template.
+## Placement is separate from mastery
+Use the published DIAGNOSTIC.md tasks and skip map to exempt already-demonstrated teaching sections. Record actual code/explanation, independence and execution status. A diagnostic does not replace the final practical gate. Guided lab repetition may be skipped only with the full independent diagnostic evidence defined there.
 
-## Pass gate
-All assessor dimensions must be met. Also complete the debugging challenge and answer the five knowledge checks in the lesson (ask separately, review misconceptions). Document guided help separately from the unassisted final variation. Phone tracing or an unexecuted design note remains study/in-progress. The course author must not record a pass for validating this suite.
+## Conceptual assessment
+Ask the chapter's five review questions separately after instruction/application. Evaluate accuracy, reasoning and concrete cases rather than memorized words. Required concepts: ordered overlap, Boolean semantics/truthiness, validation before unsafe operations, guard/loop exit scope, non-mutation, partition invariants, and loop/comprehension choice. Each must be explained accurately; remediate only the gap.
 
-The contract intentionally assumes a list of dictionaries. Top-level non-lists, non-dictionary records, duplicate IDs and invalid IDs are outside Lesson 01 scope; later lessons add structure and exception validation. Do not invent hidden requirements in grading.
+## Practical evidence sequence
+1. Inspect learner code before running. Both functions must meet ASSIGNMENT.md. Run `python -m pytest -q assessments/lesson_01/test_priority.py assessments/lesson_01/test_summary.py` on the actual final file (default student_work/lesson_01.py or ACADEMY_SUBMISSION). No network/credentials. Missing callables or NotImplementedError are expected before the learner implements; never xfail them into a pass.
+2. Review at least three learner-written tests, including boundaries/overlap, malformed values and a batch/non-mutation regression. Run their actual test file; document command, counts, environment and final code revision/hash. A supplied test suite alone is insufficient evidence of testing judgment.
+3. Inspect the learner's corrected debugging preview and regression evidence. Reproduce at least multi-record continuation, a closed-first record and empty input. The uncorrected course fixture must stay faulty. Use ACADEMY_DEBUG_SUBMISSION for a separate learner correction.
+4. Ask for an unassisted explanation of why HIGH and urgent are not equivalent, validation precedes comparison, and return belongs after the summary loop. Ask for a new edge case prediction and executed check.
+5. Select one fresh small modification after reviewing the code. State a complete change contract, require independently authored code/tests and a brief tradeoff explanation. Do not silently expand the published base contract or give hints during the attempt.
+6. Review any corrections without taking over. Re-run affected tests on the final state; log assistance and use a fresh variation where independence was lost.
+
+## Evidence gate and record
+Use RECORD_TEMPLATE.md in a NEW actual attempt file. Mark implementation, executed testing, conceptual explanation, checked edge case and fresh modification as met/needs revision/pending with evidence. All must be met. Also require debugging/regression evidence and own tests. A phone trace or unexecuted chat code remains pending execution. Neither diagnostic exemption nor reading nor course-author CI earns a practical pass.
+
+On a genuine pass append the assessment reference and advance Current lesson. On partial work save the exact next action without advancement. Course maintenance must leave progress untouched. FULL COURSE MODE and MOBILE REVIEW MODE share this evidence gate.

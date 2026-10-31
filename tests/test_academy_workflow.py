@@ -54,24 +54,27 @@ def test_ambiguous_lesson_rejected(tmp_path):
         load_navigation().current_lesson(tmp_path)
 
 
-def test_lesson_examples_execute_with_documented_output():
+def test_lesson_examples_execute_with_documented_output(monkeypatch):
+    monkeypatch.chdir(ROOT)
     text = (LESSON / "LESSON.md").read_text()
     blocks = re.findall(r"```python\n(.*?)```", text, re.DOTALL)
-    expected = ["Check the queue", "Staff the queue", "Retry carefully", "Standard queue",
-                "0\n16\n4", "10\n0", "True", "True\nFalse\nTrue", "Unsupported size", "", ""]
+    expected = ["True", "30 0\nTrue False", "False", "long recent", "review just arrived",
+                "True\nFalse\nTrue", "10\n0", "['T-1']", "", "IGNORE\nREVIEW"]
     assert len(blocks) == len(expected)
+    # The worked demonstration imports its file relative to the documented repo root.
     for block, output in zip(blocks, expected):
         stream = io.StringIO()
         with contextlib.redirect_stdout(stream):
-            exec(compile(block, str(LESSON / "LESSON.md"), "exec"), {})
+            exec(compile(block, str(LESSON / "LESSON.md"), "exec"), {"__name__": "lesson_example"})
         assert stream.getvalue().strip() == output
 
 
 def test_optional_starter_is_importable_but_unfinished():
     namespace = {}
     exec((LESSON / "STARTER.py").read_text(), namespace)
-    with pytest.raises(NotImplementedError, match="Learner implements"):
-        namespace["summarize_tickets"]([])
+    for name, arg in [("summarize_tickets", []), ("priority_for", {})]:
+        with pytest.raises(NotImplementedError, match="Learner implements"):
+            namespace[name](arg)
 
 
 def test_relative_markdown_links_resolve():

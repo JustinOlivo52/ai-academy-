@@ -1,26 +1,26 @@
-# Academy course standard
+# Full educational bootcamp course standard
 
-The course is self-paced and instructor-led through an AI conversation in the repository. Original chapters must suffice without subscriptions. Authoring produces materials, never completed student work. Lesson 01 is the reference; Lessons 02–20 remain legacy drafts until reviewed against this standard.
+The Academy is a self-paced original textbook plus instructor-led programming course. FULL COURSE MODE is default; MOBILE REVIEW MODE is explicit optional reinforcement. A phone never lowers depth. Curriculum authoring changes material, not learner progress. Lesson 01 is the reference; do not rewrite Lessons 02–20 before validating it.
 
-## Required lesson structure
-1. Title, lesson number, stage, measurable objectives, specific prerequisites and honest duration with interruptible sections.
-2. Original textbook explanation: define terms, connect prior knowledge, explain execution/data flow and tradeoffs. More than a heading and paragraph; learners should predict behavior before implementation.
-3. Concrete junior-engineer relevance tied to a fictional ticket project.
-4. Multiple runnable annotated examples with expected outputs. Examples must differ from the independent assignment so reading is not copying its solution.
-5. One practical walkthrough: inputs, explicit rule, intermediate state trace, result and edge case.
-6. Guided practice with instructor turn boundaries; a question, pause, response review and progressively stronger hints. Do not publish an answer beside the question.
-7. Independent assignment with precise interface, file, input types, output schema, valid/invalid/boundary behavior, non-mutation rule and acceptance criteria.
-8. Debugging challenge with reproducible faulty behavior, expected behavior and regression-test requirement. Student makes the fix.
-9. Exactly five conceptual knowledge-check questions; ask individually during teaching.
-10. Automated acceptance tests for executable tasks; for design/Git work, a reproducible artifact-check procedure plus human rubric. Detect plausible bugs, not just file presence. Keep course checks distinct from incomplete student labs.
-11. Common mistakes, symptoms, causes and troubleshooting steps.
-12. A substantive summary connecting to the next lesson/project.
-13. Exactly two relevant optional Go Deeper resources; record link-check date/status. Paywall or network failure never blocks the original lesson.
-14. Completion criteria requiring independent code, test evidence, explanation, an edge case and a fresh small modification. Studied is not passed.
+## Required architecture for every future lesson
+1. Substantial self-contained chapter, with measurable objectives, prerequisites, an honest duration and connected explanations. Define mechanisms, data flow, tradeoffs and failure modes, not just syntax.
+2. Concrete professional relevance in the progressive support-ticket projects.
+3. Several runnable annotated examples with output explanations and edge cases.
+4. A full realistic worked example: requirements, decision table, implementation, trace and tests. Its solution must differ from the independent assignment.
+5. Guided programming lab with stages, starter interface, exact contracts and automated stage checks. Ask for student code after meaningful teaching, not after every paragraph.
+6. Independent assignment with precise input/output/validation behavior and acceptance tests. Keep student attempts outside lesson source; never overwrite them.
+7. Intentionally faulty runnable code, reproducible failure cases and a learner-written regression fix.
+8. Conceptual and practical assessment requiring independent code, executed tests, explanation, checked edge case and fresh modification. Separate content consumption, diagnostic exemption and practical mastery.
+9. At least two supplementary resources, with Real Python where relevant, checked for reachability and semantic fit. All required teaching stays in the original chapter.
+10. Published diagnostic tasks with concept-to-section mapping, independent evidence criteria, partial-result remediation and a documented skip path. Prior project experience alone is not evidence; one tiny quiz does not exempt all basics.
+11. Troubleshooting, clean-code guidance, review checklist, summary and explicit completion criteria.
 
-## Author review gate
-Trace each objective to explanation → exercise → evidence. Execute examples and starter imports; placeholders fail only in documented ways. Run repository checks and explicit lab tests. Verify acceptance tests against controlled correct/incorrect behavior without committing an assignment answer. Check internal links and external resource availability; label uncertainty instead of inventing success.
+## Delivery standard
+An instructional turn completes a meaningful teaching section, using several connected paragraphs, annotated code and realistic reasoning before asking one checkpoint task. Learners can ask questions at any point. Use the written chapter rather than improvising a miniature lesson. Full chapters can span short sessions without shrinking the material. Mobile review is optional and has the same correctness/assessment requirements.
 
-Read student_work and progress before writing. Do not edit student attempts; add versioned templates or tests elsewhere. Preserve old evidence when changing a contract, document migration and never retroactively revoke a pass. Assessment records contain date, attempt path/hash, assistance, command/results, explanation and modification evidence, verdict and next action.
+## Validation gate
+Execute example files and assert their documented behavior. Exercise actual contract cases including boundary/type/error/continuation/non-mutation behavior. Student starters must import and fail only with documented NotImplementedError until attempted. Never make unfinished assignments green via hidden reference answers or xfail. Keep default course checks separate from explicit learner suites.
 
-Validate one batch before authoring the next. Headings and word counts do not establish chapter quality. Use manual pedagogical review and conversation scenarios as well as automated checks. No deadline, including November 23, warrants invented mastery.
+Check test sensitivity using fixed finite responses or injected faulty variants without committing a general independent-assignment solution. Report that limitation accurately. Rehearse mode routing, diagnostic skip, substantial-section delivery, wrong-answer feedback, question interruption, phone behavior and assessment handoff. Structural tests alone do not prove good teaching or future model compliance.
+
+Read progress/student work before authoring; preserve their bytes and history. Version changed contracts, retain prior evidence, and never retroactively revoke passes. Only actual learner evidence can update mastery. Subsequent lesson batches follow this standard after Lesson 01 review.

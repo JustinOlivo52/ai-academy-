@@ -28,8 +28,8 @@ Checked 2026-10-31 using HTTP GET. 200 means reachable, not a verified content/p
 | https://realpython.com/learning-paths/llm-application-development-python/ | 200 | https://realpython.com/learning-paths/llm-application-development-python/ |
 | https://realpython.com/pytest-python-testing/ | 200 | https://realpython.com/pytest-python-testing/ |
 | https://realpython.com/python-classes/ | 200 | https://realpython.com/python-classes/ |
+| https://realpython.com/python-conditional-statements/ | 200 | https://realpython.com/python-conditional-statements/ |
 | https://realpython.com/python-dicts/ | 200 | https://realpython.com/python-dicts/ |
-| https://realpython.com/python-for-loop/ | 200 | https://realpython.com/python-for-loop/ |
 | https://realpython.com/python-git-github-intro/ | 200 | https://realpython.com/python-git-github-intro/ |
 | https://realpython.com/python-json/ | 200 | https://realpython.com/python-json/ |
 | https://realpython.com/python-logging/ | 200 | https://realpython.com/python-logging/ |

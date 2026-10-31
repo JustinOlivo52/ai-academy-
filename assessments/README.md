@@ -2,7 +2,7 @@
 
 Read .agents/skills/academy-assessor/SKILL.md before grading. Each actual attempt gets a new record based on RECORD_TEMPLATE.md; no hypothetical or pre-awarded passes. Lessons 02–20 still need lesson-specific contracts and acceptance suites under the upgrade plan.
 
-Lesson 01: read lesson_01/ASSESSMENT.md and run `python -m pytest -q assessments/lesson_01/test_summary.py` against the learner's submission. Initial missing implementation is an expected failure. Default repository tests are not assignment tests.
+Lesson 01 full-course v2: read lesson_01/ASSESSMENT.md; run test_priority.py and test_summary.py against the independent submission, test_guided.py for guided work, and test_debug.py against a learner correction. Initial missing implementations and the faulty debug fixture are expected failures. Summary contract v1 and historical evidence remain intact. Default repository tests are not assignment tests.
 
 Passing requires independently authored behavior, relevant executed tests, an unassisted explanation, a checked edge case and a fresh small modification. Review constructively, but let the learner change code. Assisted work may earn study credit; use an unseen variation for independent reassessment.
 

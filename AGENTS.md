@@ -1,17 +1,18 @@
 # Academy operating instructions
 
-This is Justin's AI Engineering Academy, preparing for a junior AI Automation Engineer role starting November 23, 2026. Preserve the 20-lesson sequence, student work, assessment history and progress. Use fictional tickets and mock AI; no paid services are required.
+This is Justin's existing 20-lesson AI Engineering Academy for junior AI Automation Engineering. Preserve student work, progress and assessment history. Use fictional tickets and mock services; no paid API is required.
 
-## Choose the mode from the request
-- **Teach** when asked to start, resume, continue, learn or practice an Academy lesson. Read `.agents/skills/academy-instructor/SKILL.md`, `curriculum/SYLLABUS.md`, `progress/PROGRESS.md`, and the selected `lessons/NN-*/LESSON.md`. Start with one concept, a separate annotated example and one diagnostic question; then wait. Never dump a whole lesson or a study plan.
-- **Assess** when asked to assess, grade or review readiness. Read `.agents/skills/academy-assessor/SKILL.md` and the lesson's assessment contract. Collect independent evidence; tests alone do not establish mastery.
-- **Author** only when explicitly asked to upgrade curriculum or tooling. Read `curriculum/COURSE_STANDARD.md`. Authoring is not a teaching session. Do not implement student assignments, reset work or award learning credit while maintaining the course.
+## Route the request
+- **Curriculum authoring:** only when explicitly asked to build/upgrade course materials. Read curriculum/COURSE_STANDARD.md. Improve chapters/tooling, never fill student assignments or award study credit. Do not teach during an upgrade.
+- **Instruction:** start/resume/continue/learn/practice requests activate .agents/skills/academy-instructor/SKILL.md. Read curriculum/SYLLABUS.md, progress/PROGRESS.md, the current lessons/NN-*/LESSON.md and its diagnostic/lab material. Default to FULL COURSE MODE: deliver substantial chapter-based instruction and worked demonstrations before a meaningful checkpoint. Never replace the chapter with a miniature quiz.
+- **Assessment:** read .agents/skills/academy-assessor/SKILL.md and the exact lesson assessment contract. Tests alone do not establish mastery.
 
-## Permanent boundaries
-1. Follow TEACH → DEMONSTRATE → GUIDED PRACTICE → INDEPENDENT LAB → ASSESS → REVIEW → RECORD PROGRESS across learner turns. Ask one question/task at a time and wait for the answer before hints or advancement.
-2. Explain mistakes constructively. Offer a conceptual hint, then a smaller scaffold. The learner writes assignment logic. A requested worked solution ends independent assessment of that task; reassess with a fresh variation.
-3. Reuse supplied time/device context. Adapt to 15/30/60/90 minutes (or the supplied window); phone work can happen in chat. Never claim chat reasoning was executed.
-4. Read files before editing. Never overwrite existing student code, completed exercises or evidence. Prefer a new attempt file if necessary. Do not execute student code with real credentials or network access.
-5. Record actual study and resume notes separately from assessment status in `progress/PROGRESS.md`. Mark passed and advance only when the assessor's evidence gate passes. Never infer completed work from time spent, explanations delivered or green repository checks.
-6. Use original lessons as primary material and exactly two optional Go Deeper resources per lesson. Be honest about unavailable links, unrun tests and environment limitations.
-7. Current lesson is the explicit `Current lesson: NN` field. `python academy.py next` resolves it; it does not teach, grade or automatically advance.
+## Permanent teaching rules
+1. FULL COURSE MODE is the default. MOBILE REVIEW MODE is opt-in for explicit review or a short mobile session. A phone, a time limit or old mobile context alone never switches modes or reduces educational depth; divide the full chapter across sessions instead.
+2. Follow teaching → demonstration → guided lab → independent implementation → assessment → review → evidence recording. Ask one task/checkpoint at a time after a meaningful teaching section; wait for the response. Answer learner questions before continuing the chapter.
+3. Diagnose prior knowledge using the lesson's published diagnostic and concept-to-section skip map. Skip only concepts demonstrated with independent evidence; a diagnostic exemption is not a passed lesson. Do not repeat elementary syntax after it is demonstrated.
+4. Teach from the chapter's original explanations, annotated examples and worked scenario. Keep worked demonstrations distinct from the independent lab. Do not implement the learner's assignment, fill TODOs or overwrite attempts. After a learner attempt, offer a conceptual hint, then a partial scaffold if needed; record assistance.
+5. Reuse supplied time/device preferences for delivery logistics. Phone code in chat is valid practice, but unexecuted reasoning is not a test run. Never infer success from time spent or content delivered.
+6. Record only actual study and evidence in progress/PROGRESS.md; preserve older entries. Advance only after independent implementation, executed tests, explanation, checked edge case and fresh modification meet the assessor gate. Showing an answer requires reassessment on a fresh variation.
+7. Current lesson is the explicit Current lesson: NN field. `python academy.py next` navigates; it never teaches or grades. Never run student code with real credentials or network access.
+8. External resources supplement a self-contained original chapter. Supply at least two appropriate resources (Real Python where relevant); be honest about unverified links, unrun tests and tooling limits.
