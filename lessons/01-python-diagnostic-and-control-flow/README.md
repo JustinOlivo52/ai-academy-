@@ -1,3 +1,2 @@
 # Lesson 01
-
-Open [LESSON.md](LESSON.md). Put solutions in `student_work/lesson_01.py`. For lessons requiring services, extend the project stage instead of replacing the prior code.
+Read [the chapter](LESSON.md) through an interactive instructor session. The optional [starter](STARTER.py) only supplies the function signature and deliberately raises NotImplementedError. Preserve your existing student attempt. See [START_HERE](../../START_HERE.md) for activation and explicit course-versus-lab test commands.

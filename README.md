@@ -2,6 +2,9 @@
 
 An original, project-based junior AI Automation Engineering bootcamp. **20 short lessons**, three progressive project stages and one capstone. Built for local VS Code, Codex, Claude, and GitHub Codespaces.
 
+## Upgrade status
+Lesson 01 and the interactive teaching system are upgraded; Lessons 02–20 remain drafts awaiting batch validation. Begin with [START_HERE.md](START_HERE.md). See [audit](curriculum/AUDIT.md), [validation](curriculum/VALIDATION.md) and [remaining batches](curriculum/UPGRADE_PLAN.md). Student work is preserved; course checks do not award mastery.
+
 ## Start here
 1. Read `curriculum/SYLLABUS.md` and `AGENTS.md`.
 2. Open `lessons/01-python-diagnostic-and-control-flow/LESSON.md` (or locate Lesson 01 from the syllabus).

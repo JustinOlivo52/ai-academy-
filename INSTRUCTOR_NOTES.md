@@ -1,4 +1,9 @@
-# Instructor note (not secret answer key)
-The tests in `practice/test_ticket_rules.py` are intentionally not part of the default test run (`pytest.ini` limits discovery to tests/). `python -m pytest -q` checks repo integrity. To test your assignment, run `python -m pytest -q practice/test_ticket_rules.py` after implementing it. Do not mistake the repository's initial green structure tests for proof that student exercises are completed.
+# Course author / instructor notes
 
-This is a usable **v1 course pack**: all 20 original lesson chapters and assignments exist, and the staged projects are specified. Deep interactive features (web GUI, automatic grading, fully implemented 20 project-specific challenge suites) are not included. Students and tutor should gradually add instructor-reviewed exercises as the course proceeds.
+Lesson 01 is the reference-quality upgraded chapter. Lessons 02–20 remain legacy drafts, not validated full chapters. See curriculum/AUDIT.md and curriculum/UPGRADE_PLAN.md. Do not imply the whole Academy upgrade is complete.
+
+Authoring requests use curriculum/COURSE_STANDARD.md; teaching requests use .agents/skills/academy-instructor/SKILL.md; grading uses academy-assessor. Skills are repository instructions, not an automatic grading server or a web UI. The learner must open the repository in a skill-capable tutor or provide the files through the portable prompt.
+
+`python -m pytest -q` runs course-integrity/tooling checks only. `python -m pytest -q assessments/lesson_01/test_summary.py` runs Lesson 01 student acceptance tests and is expected to fail until the learner implements the function. The old practice/test_ticket_rules.py is a later priority-classification lab and also intentionally fails while unimplemented. Neither suite is silently skipped or counted as learner success.
+
+Course quality checks should exercise navigation, lesson examples, links, student boundary contracts and failure behavior. Do not commit a reference implementation of the student's lab. Record actual author validation in curriculum/VALIDATION.md, never in the student's assessment ledger. Runtime testing does not prove an AI tutor will follow instructions in every future conversation; use the scenario checklist there for manual acceptance.
